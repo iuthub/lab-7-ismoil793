@@ -1,7 +1,27 @@
-<?php  
-
+<?php
+ob_start();
 include('connection.php');
 
+if($_SERVER["REQUEST_METHOD"]=="POST" && $confirm_pwd==$pwd){
+    $username=$_POST["username"];
+    $fullname=$_POST["fullname"];
+    $email=$_POST["email"];
+    $pwd=$_POST["pwd"];
+    $confirm_pwd=$_POST["confirm_pwd"];
+
+	$query="INSERT INTO users (`username`,`email`,`password`,`fullname`) VALUES(?,?,?,?)";
+	$pst=$conn->prepare($query);
+	$pst->bindParam(1,$username);
+	$pst->bindParam(2,$email);
+	$pst->bindParam(3,$pwd);
+	$pst->bindParam(4,$fullname);
+	$pst->execute();
+    header('Location: index.php');
+
+}else if($confirm_pwd!=$pwd){?>
+	<h4 style="color: red">Try again</h4>
+<?}
+else
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
@@ -39,7 +59,7 @@ include('connection.php');
 						<input type="password" name="confirm_pwd" id="confirm_pwd" required />
 					</li>
 					<li>
-						<input type="submit" value="Submit" /> &nbsp; Already registered? <a href="index.php">Login</a>
+						<input type="submit" value="Submit" />&nbsp; Already registered? <a href="index.php">Login</a>
 					</li>
 				</ul>
 		</form>
